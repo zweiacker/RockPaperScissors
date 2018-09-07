@@ -1,0 +1,51 @@
+RockPaperScissors SPEC  //  BASIC CONCEPTS AND ASSUMPTIONS
+----------------------------------------------------------
+
+player = starts a new RPS-game
+opponent = is challenged by a player to participate in a game
+
+
+- players know each other by address
+- players are communicating outside the contract, e.g. announcing that they started a game.
+
+- players start a new game by specifying the opponent's address, their encrypted move and bet.
+- players can only start one game at a time. The game must be settled before a new one can start.
+- you can be invited as the opponent in many other games, started by other players.
+- as players can only initiate one game at a time, opponents can refer to the game by the player's address
+- opponent players can check the bet amount of the current game by calling an internal function, if needed
+
+- opponents respond by sending their move along with sufficient funds to match the bet
+	. if funds too low - break
+	. if funds too high - play + assign excess funds to the balance
+	. if funds are sufficient then play
+	. move is not encrypted
+
+- players can chose not to send a bet value when starting a new game, in which case 
+	. the bet is the same as their balance
+	. if no balance, then break
+
+- opponents have to send funds which must at least match the bet.
+
+- to avoid blocking the procedures by anyone player or opponent, time-based measures have been implemented
+	. opponents must respond within a specified time frame (playing period)
+	. players must reveal what their move was within a specified time frame (reveal period)
+	. the game can only be settled if periods are over or certain constraints met
+
+- player or opponent can enforce the settlement of the game, hence avoiding to block each other
+	. if playing period has passed without a response from opponent, then player is credited back the bet.
+	. if reveal period has passed without the player having revealed, then opponent is credited twice the bet.
+	. final settlement does not happen automatically, but can be initiated by either party.
+	. settlement is a function, it is checking the status of the game and determines the winner
+	. winner gets credited twice the bet to their balance
+
+- players can withdraw their balance
+	. anytime, but not while they are the owner of an unsettled game.
+
+
+****
+
+What could be done in addition:
+- maintain a player's list from which players can chose an opponent
+- implement automatic settlement, e.g. by another contract that polls for unsettled games
+
+
